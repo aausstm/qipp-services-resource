@@ -1,0 +1,23 @@
+{
+  "name": "qipp-services-io",
+  "version": "0.1.0",
+  "title": "IO service",
+  "description": "IO service for Angular application.",
+  "keywords": [
+    "qipp",
+    "organize",
+    "things"
+  ],
+  "homepage": "https://www.qipp.com/",
+  "author": {
+    "name": "AQUANTUM",
+    "url": "http://www.aquantum.de/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "ssh://git@bitbucket.org:aquantum/qipp-services-io.git"
+  },
+  "dependencies": {
+  },
+  "license": "MIT"
+}
