@@ -1,8 +1,8 @@
 {
-  "name": "qipp-services-io",
+  "name": "qipp-services-resource",
   "version": "0.1.0",
-  "title": "IO service",
-  "description": "IO service for Angular application.",
+  "title": "Resource service",
+  "description": "Resource service for Angular application.",
   "keywords": [
     "qipp",
     "organize",
@@ -15,7 +15,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "ssh://git@bitbucket.org:aquantum/qipp-services-io.git"
+    "url": "ssh://git@bitbucket.org:aquantum/qipp-services-resource.git"
   },
   "dependencies": {
   },
