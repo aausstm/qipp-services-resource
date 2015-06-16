@@ -207,7 +207,18 @@
                   helper,
                   user
                 ) {
-                    return function (url, options) {
+                    // The ignorePaging boolean is used by the authResource
+                    // in order to bypass the paging parameter.
+                    return function (url, options, ignorePaging) {
+                        if (!ignorePaging) {
+                            options = helper.deepExtend({
+                                params: {
+                                    common: {
+                                        limit: $config.itemsPerPage
+                                    }
+                                }
+                            }, options);
+                        }
                         var rs = resource(url, helper.deepExtend({
                             host: $config.host,
                             prefix: $config.prefix,
@@ -256,13 +267,7 @@
                                     resource.errors = {status: [response.status]};
                                 }
                             }
-                        }, angular.extend({
-                            params: {
-                                common: {
-                                    limit: $config.itemsPerPage
-                                }
-                            }
-                        }, options)));
+                        }, options));
                         rs.user = user;
                         return rs;
                     };
@@ -277,17 +282,20 @@
             };
             this.defaults = $config;
             this.$get = [
-              'apiResource',
+                'apiResource',
                 function (
-                  apiResource
+                    apiResource
                 ) {
                     return function (url, options) {
-                        return apiResource(url, angular.extend({
-                            host: $config.host,
-                            prefix: $config.prefix,
-                            withCredentials: true,
-                            params: {}
-                        }, options));
+                        return apiResource(
+                            url,
+                            angular.extend({
+                                host: $config.host,
+                                prefix: $config.prefix,
+                                withCredentials: true
+                            }, options),
+                            true // Set ignore paging
+                        );
                     };
                 }
             ];
