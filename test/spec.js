@@ -555,7 +555,6 @@
                         });
                     rs.$get();
                     $httpBackend.flush();
-                    console.log(rs.data);
                     expect(rs.data.test).toEqual(123);
                     expect(rs.links).toEqual(links);
                     expect(rs.enum).toEqual(indexes);
