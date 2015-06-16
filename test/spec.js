@@ -506,7 +506,8 @@
 
         describe('apiResource', function () {
 
-            var $httpBackend;
+            var $httpBackend,
+                path = '/test?limit=10';
 
             beforeEach(inject(function (_$httpBackend_) {
                 $httpBackend = _$httpBackend_;
@@ -522,7 +523,7 @@
             it('Should use the api URL prefix.', inject(
                 function (apiResource) {
                     var rs = apiResource('test');
-                    $httpBackend.expectGET(host + '/test')
+                    $httpBackend.expectGET(host + path)
                         .respond(200);
                     rs.$get();
                     $httpBackend.flush();
@@ -531,20 +532,45 @@
 
             it('Should unwrap the response data property.', inject(
                 function (apiResource) {
-                    var rs = apiResource('test');
-                    $httpBackend.expectGET(host + '/test')
-                        .respond(200, {data: {test: 123}});
+                    var rs = apiResource('test'),
+                        links = {
+                            first: {}
+                        },
+                        indexes = {
+                            items: 30,
+                            page: 1,
+                            pages: 3
+                        };
+                    $httpBackend.expectGET(host + path)
+                        .respond(200, {
+                            _embedded: { // jshint ignore:line
+                                items: {
+                                    test: 123
+                                }
+                            },
+                            _links: links,
+                            page: 1,
+                            pages: 3,
+                            total: 30
+                        });
                     rs.$get();
                     $httpBackend.flush();
+                    console.log(rs.data);
                     expect(rs.data.test).toEqual(123);
+                    expect(rs.links).toEqual(links);
+                    expect(rs.enum).toEqual(indexes);
                 }
             ));
 
             it('Should unwrap the response errors property.', inject(
                 function (apiResource) {
                     var rs = apiResource('test');
-                    $httpBackend.expectGET(host + '/test')
-                        .respond(400, {errors: {test: ['invalid']}});
+                    $httpBackend.expectGET(host + path)
+                        .respond(400, {
+                            errors: {
+                                test: ['invalid']
+                            }
+                        });
                     rs.$get();
                     $httpBackend.flush();
                     expect(rs.errors).toBeDefined();
@@ -556,7 +582,7 @@
             it('Should use the HTTP status on error if no errors are returned.', inject(
                 function (apiResource) {
                     var rs = apiResource('test');
-                    $httpBackend.expectGET(host + '/test')
+                    $httpBackend.expectGET(host + path)
                         .respond(400);
                     rs.$get();
                     $httpBackend.flush();
@@ -570,7 +596,7 @@
                 function (apiResource) {
                     var rs = apiResource('test');
                     rs.errors = {test: ['invalid']};
-                    $httpBackend.expectGET(host + '/test')
+                    $httpBackend.expectGET(host + path)
                         .respond(200);
                     rs.$get();
                     $httpBackend.flush();
@@ -581,7 +607,7 @@
             it('Should only send parameters defined as form fields.', inject(
                 function (apiResource) {
                     var rs = apiResource('test');
-                    $httpBackend.expectPOST(host + '/test', {
+                    $httpBackend.expectPOST(host + path, {
                         test: 123,
                         test3: {
                             key: 'value'
@@ -621,7 +647,13 @@
                 function (authResource) {
                     var rs = authResource('test');
                     $httpBackend.expectGET(authHost + '/test')
-                        .respond(200, {data: {test: 123}});
+                         .respond(200, {
+                            _embedded: { // jshint ignore:line
+                                items: {
+                                    test: 123
+                                }
+                            }
+                        });
                     rs.$get();
                     $httpBackend.flush();
                     expect(rs.data.test).toEqual(123);

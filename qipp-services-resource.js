@@ -192,7 +192,10 @@
         .provider('apiResource', function () {
             var $config = {
                 host: undefined,
-                prefix: '/'
+                prefix: '/',
+                // Set the number of items to be displayed
+                // per page.
+                itemsPerPage: 10
             };
             this.defaults = $config;
             this.$get = [
@@ -233,15 +236,33 @@
                                 }
                             },
                             handleResponse: function (resource, response) {
-                                if (response.data && response.data.data) {
-                                    resource.data = response.data.data;
+                                /* jshint ignore:start */
+                                var data = response.data;
+                                if (data && data._embedded) {
+                                    // Populate the resource
+                                    resource.data = data._embedded.items;
+                                    // Store the links for further use
+                                    resource.links = data._links;
+                                    /* jshint ignore:end */
+                                    // Push the indexes as an enum property
+                                    resource.enum = {
+                                        items: data.total,
+                                        page: data.page,
+                                        pages: data.pages
+                                    };
                                 }
-                                resource.errors = response.data && response.data.errors;
+                                resource.errors = data && data.errors;
                                 if (!resource.errors && resource.state === 'error') {
                                     resource.errors = {status: [response.status]};
                                 }
                             }
-                        }, options));
+                        }, angular.extend({
+                            params: {
+                                common: {
+                                    limit: $config.itemsPerPage
+                                }
+                            }
+                        }, options)));
                         rs.user = user;
                         return rs;
                     };
@@ -264,7 +285,8 @@
                         return apiResource(url, angular.extend({
                             host: $config.host,
                             prefix: $config.prefix,
-                            withCredentials: true
+                            withCredentials: true,
+                            params: {}
                         }, options));
                     };
                 }
