@@ -498,7 +498,6 @@
                     $httpBackend.expectGET().respond(401);
                     resource('test').$get();
                     $httpBackend.flush();
-                    //expect(promise.then).toBeDefined();
                 }
             ));
 
@@ -558,6 +557,17 @@
                     expect(rs.data.test).toEqual(123);
                     expect(rs.links).toEqual(links);
                     expect(rs.enum).toEqual(indexes);
+                }
+            ));
+
+            it('Should reset the prefix if a API version is already provided in the url.', inject(
+                function (apiResource) {
+                    var url = '/api/v1337/test',
+                        rs = apiResource(url);
+                    $httpBackend.expectGET(host + url + '?limit=10')
+                        .respond(200);
+                    rs.$get();
+                    $httpBackend.flush();
                 }
             ));
 
