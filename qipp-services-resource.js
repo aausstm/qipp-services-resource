@@ -209,12 +209,17 @@
                 ) {
                     return function (url, options, ignorePaging) {
                         var rs,
-                            // Match '/api/v[0-∞]'
-                            regex = /^\/api\/v\d+\//,
+                            regex = {
+                                // Match '/api/v[0-∞]'
+                                api: /^\/api\/v\d+\//,
+                                // Match 'limit=[0-∞]'
+                                limit: /limit=\d+/
+                            },
                             prefix = $config.prefix;
                         // The ignorePaging boolean is used by the authResource
                         // in order to bypass the paging parameter.
-                        if (!ignorePaging) {
+                        // We also don't want to add another limit parameter.
+                        if (!ignorePaging && !url.match(regex.limit)) {
                             options = helper.deepExtend({
                                 params: {
                                     common: {
@@ -226,7 +231,7 @@
                         // Remove the api prefix if one is already provided in the url.
                         // This could be the case with the paging service, with the links
                         // coming from the API, or if reaching a different API version is required.
-                        if (url.match(regex)) {
+                        if (url.match(regex.api)) {
                            prefix = '';
                         }
                         rs = resource(url, helper.deepExtend({
