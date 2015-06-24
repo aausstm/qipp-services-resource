@@ -158,22 +158,44 @@
                                 settings.handleResponse(that, response);
                             },
                             function (response) {
-                                // Look after an unauthorized authentication
-                                // i.e. the access token is expired or invalid
+                                var tokenDeferred = $q.defer();
+                                // Shortcut method
+                                function handle () {
+                                    settings.handleResponse(that, response);
+                                }
+                                // Look after an unauthorized authentication,
+                                // i.e. the access token is expired or invalid.
                                 if (response.status === 401) {
-                                    // Use auth through the relay service to avoid a circular dependency
-                                    // as auth is already using authResource
+                                    // Inject a new promise as property in order to keep track
+                                    // of the resource status.
+                                    that.accessTokenPromise = tokenDeferred.promise;
+                                    // Use auth through the relay service in order to avoid
+                                    // a circular dependency as auth is already using authResource.
                                     relay.exec([
                                         'auth',
                                         function (service) {
-                                            // Provide the request and the response as arguments
-                                            service.getNewAccessToken(that, response);
+                                            // Provide the request and the response as arguments.
+                                            service
+                                                .getNewAccessToken(that, response)
+                                                .then(
+                                                    function (data) {
+                                                        response = data;
+                                                        handle();
+                                                        that.state = 'success';
+                                                        tokenDeferred.resolve();
+                                                    },
+                                                    function () {
+                                                        handle();
+                                                        that.state = 'error';
+                                                        tokenDeferred.reject();
+                                                    }
+                                                );
                                         }
                                     ]);
                                 } else {
                                     that.state = 'error';
+                                    handle();
                                 }
-                                settings.handleResponse(that, response);
                             }
                         );
                         return promise
@@ -193,8 +215,7 @@
             var $config = {
                 host: undefined,
                 prefix: '/',
-                // Set the number of items to be displayed
-                // per page.
+                // Set the number of items to be displayed per page.
                 itemsPerPage: 10
             };
             this.defaults = $config;
@@ -263,7 +284,13 @@
                             },
                             handleResponse: function (resource, response) {
                                 /* jshint ignore:start */
-                                var data = response.data;
+                                // Either this method is called after a 401,
+                                // or directly from the resource. As a consequence,
+                                // the response data could be injected differently.
+                                var data =
+                                        response._embedded ?
+                                        response :
+                                        response.data;
                                 if (data && data._embedded) {
                                     // Populate the resource
                                     resource.data = data._embedded.items;
