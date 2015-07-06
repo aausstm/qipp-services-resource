@@ -292,12 +292,19 @@
                                         response :
                                         response.data;
                                 if (data && data._embedded) {
-                                    // Populate the resource
-                                    resource.data = data._embedded.items;
-                                    // Store the links for further use
+                                    // Populate the resource with the data directly
+                                    // or either with the embedded items.
+                                    // We could detect it as a given response could have
+                                    // an id, which that, in this case, the response root
+                                    // must be the resource.data.
+                                    resource.data =
+                                        data.id ?
+                                        data :
+                                        data._embedded.items;
+                                    // Store the links for further use.
                                     resource.links = data._links;
                                     /* jshint ignore:end */
-                                    // Push the indexes as an enum property
+                                    // Push the indexes as an enum property.
                                     resource.enum = {
                                         items: data.total,
                                         page: data.page,

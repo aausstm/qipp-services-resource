@@ -560,6 +560,52 @@
                 }
             ));
 
+            it('Should unwrap the response data property after a 401.', inject(
+                function ($rootScope, apiResource, auth, semaphore) {
+                    // Create a resource semaphore
+                    semaphore.init('resource');
+                    // Configure the auth provider
+                    auth.defaults.host = 'https://auth.qipp.com';
+                    auth.defaults.prefix = '/prefix/';
+                    auth.defaults.clientId = '123';
+                    auth.request = [
+                        auth.defaults.host,
+                        auth.defaults.prefix,
+                        'access-token?client_id=',
+                        auth.defaults.clientId
+                    ].join('');
+                    var rs = apiResource('test'),
+                        links = {
+                            first: {}
+                        },
+                        indexes = {
+                            items: 30,
+                            page: 1,
+                            pages: 3
+                        };
+                    $httpBackend.expectGET(host + path)
+                        .respond(401);
+                    $httpBackend.expectGET(host + path)
+                        .respond(200, {
+                            _embedded: { // jshint ignore:line
+                                items: {
+                                    test: 123
+                                }
+                            },
+                            _links: links,
+                            page: 1,
+                            pages: 3,
+                            total: 30
+                        });
+                    rs.$get();
+                    $rootScope.$digest();
+                    $httpBackend.flush();
+                    expect(rs.data.test).toEqual(123);
+                    expect(rs.links).toEqual(links);
+                    expect(rs.enum).toEqual(indexes);
+                }
+            ));
+
             it('Should reset the prefix if a API version is already provided in the url.', inject(
                 function (apiResource) {
                     var url = '/api/v1337/test',
