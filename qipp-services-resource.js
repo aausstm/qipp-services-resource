@@ -307,6 +307,7 @@
                                     // Push the indexes as an enum property.
                                     resource.enum = {
                                         items: data.total,
+                                        limit: data.limit,
                                         page: data.page,
                                         pages: data.pages
                                     };
