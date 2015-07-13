@@ -89,6 +89,7 @@
                     };
                     Resource.prototype.$request = function (action, opts, returnOpts) {
                         var that = this,
+                            requestDeferred = $q.defer(),
                             eventEmitter = function () {
                                 that.$emit(
                                     that.action + that.state,
@@ -118,7 +119,7 @@
                                 headers: headers,
                                 withCredentials: settings.withCredentials
                             }, opts),
-                            promise;
+                            promise = requestDeferred.promise;
                         options.method = angular.uppercase(options.method);
                         // Only send body data for POST/PUT/PATCH requests:
                         if (options.method === 'DELETE') {
@@ -148,17 +149,23 @@
                         this.state = 'pending';
                         settings.handleRequest(that, options);
                         eventEmitter(options);
-                        this.$promise = promise = $http(options);
-                        // The promise object returned by then() doesn't include
-                        // the $http specific success and error methods, so we
-                        // simply return the original $http promise:
-                        promise.then(
+                        // Create success and error states, same as the http method.
+                        promise.success = function (cb) {
+                            promise.then(cb);
+                            return promise;
+                        };
+                        promise.error = function (cb) {
+                            promise.then(null, cb);
+                            return promise;
+                        };
+                        this.$promise = promise;
+                        $http(options).then(
                             function (response) {
                                 that.state = 'success';
                                 settings.handleResponse(that, response);
+                                requestDeferred.resolve(response.data);
                             },
                             function (response) {
-                                var tokenDeferred = $q.defer();
                                 // Shortcut method
                                 function handle () {
                                     settings.handleResponse(that, response);
@@ -166,9 +173,6 @@
                                 // Look after an unauthorized authentication,
                                 // i.e. the access token is expired or invalid.
                                 if (response.status === 401) {
-                                    // Inject a new promise as property in order to keep track
-                                    // of the resource status.
-                                    that.accessTokenPromise = tokenDeferred.promise;
                                     // Use auth through the relay service in order to avoid
                                     // a circular dependency as auth is already using authResource.
                                     relay.exec([
@@ -182,19 +186,20 @@
                                                         response = data;
                                                         handle();
                                                         that.state = 'success';
-                                                        tokenDeferred.resolve();
+                                                        requestDeferred.resolve(data);
                                                     },
                                                     function () {
                                                         handle();
                                                         that.state = 'error';
-                                                        tokenDeferred.reject();
+                                                        requestDeferred.reject();
                                                     }
                                                 );
                                         }
                                     ]);
                                 } else {
-                                    that.state = 'error';
                                     handle();
+                                    that.state = 'error';
+                                    requestDeferred.reject();
                                 }
                             }
                         );
