@@ -293,10 +293,10 @@
                                 // or directly from the resource. As a consequence,
                                 // the response data could be injected differently.
                                 var data =
-                                        response._embedded ?
-                                        response :
-                                        response.data;
-                                if (data && data._embedded) {
+                                        response.data ?
+                                        response.data :
+                                        response;
+                                if (data) {
                                     // Populate the resource with the data directly
                                     // or either with the embedded items.
                                     // We could detect it as a given response could have
@@ -309,13 +309,14 @@
                                     // Store the links for further use.
                                     resource.links = data._links;
                                     /* jshint ignore:end */
-                                    // Push the indexes as an enum property.
-                                    resource.enum = {
-                                        items: data.total,
-                                        limit: data.limit,
-                                        page: data.page,
-                                        pages: data.pages
-                                    };
+                                    // Push the indexes as an enum property for paging.
+                                    // These indexes will be populated only for collections.
+                                        resource.enum = {
+                                            items: data.total,
+                                            limit: data.limit,
+                                            page: data.page,
+                                            pages: data.pages
+                                        };
                                 }
                                 resource.errors = data && data.errors;
                                 if (!resource.errors && resource.state === 'error') {
