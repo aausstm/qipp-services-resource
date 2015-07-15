@@ -292,11 +292,17 @@
                                 // Either this method is called after a 401,
                                 // or directly from the resource. As a consequence,
                                 // the response data could be injected differently.
-                                var data =
-                                        response.data ?
-                                        response.data :
-                                        response;
-                                if (data) {
+                                // Also, after a 204(e.g. DELETE), no content is provided
+                                // thus response.data is set to be an empty string.
+                                var data;
+                                if (!!Object.keys(response.data).length) {
+                                    data = response.data;
+                                }
+                                if (response.id || response._embedded) {
+                                    data = response;
+                                }
+                                // Only process if data is set.
+                                if (!!data) {
                                     // Populate the resource with the data directly
                                     // or either with the embedded items.
                                     // We could detect it as a given response could have
@@ -311,12 +317,12 @@
                                     /* jshint ignore:end */
                                     // Push the indexes as an enum property for paging.
                                     // These indexes will be populated only for collections.
-                                        resource.enum = {
-                                            items: data.total,
-                                            limit: data.limit,
-                                            page: data.page,
-                                            pages: data.pages
-                                        };
+                                    resource.enum = {
+                                        items: data.total,
+                                        limit: data.limit,
+                                        page: data.page,
+                                        pages: data.pages
+                                    };
                                 }
                                 resource.errors = data && data.errors;
                                 if (!resource.errors && resource.state === 'error') {
