@@ -304,14 +304,11 @@
                                 // Only process if data is set.
                                 if (!!data) {
                                     // Populate the resource with the data directly
-                                    // or either with the embedded items.
-                                    // We could detect it as a given response could have
-                                    // an id, which that, in this case, the response root
-                                    // must be the resource.data.
+                                    // or either with the embedded items (collection).
                                     resource.data =
-                                        data.id ?
-                                        data :
-                                        data._embedded.items;
+                                        data.hasOwnProperty('total') ?
+                                        data._embedded.items :
+                                        data;
                                     // Store the links for further use.
                                     resource.links = data._links;
                                     /* jshint ignore:end */
