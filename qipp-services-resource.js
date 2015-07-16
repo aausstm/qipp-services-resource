@@ -295,7 +295,7 @@
                                 // Also, after a 204(e.g. DELETE), no content is provided
                                 // thus response.data is set to be an empty string.
                                 var data;
-                                if (!!Object.keys(response.data).length) {
+                                if (response.data) {
                                     data = response.data;
                                 }
                                 if (response.id || response._embedded) {
