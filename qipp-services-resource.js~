@@ -236,9 +236,9 @@
                     return function (url, options, ignorePaging) {
                         var rs,
                             regex = {
-                                // Match '/api/v[0-∞]'
+                                // Match '/api/v[0-âˆž]'
                                 api: /^\/api\/v\d+\//,
-                                // Match 'limit=[0-∞]'
+                                // Match 'limit=[0-âˆž]'
                                 limit: /limit=\d+/
                             },
                             prefix = $config.prefix;
