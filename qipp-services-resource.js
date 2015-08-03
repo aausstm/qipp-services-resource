@@ -52,30 +52,30 @@
                             }
                         });
                     },
-                    Resource = function (url, options) {
-                        var that = this,
-                            deferred = $q.defer();
-                        deferred.resolve();
-                        this.$promise = deferred.promise;
-                        pubsub(this);
-                        this.data = (options && options.data) || {};
-                        this.options = helper.deepExtend(
-                            {url: url},
-                            $config,
-                            options
-                        );
-                        // grab the access token from io service
-                        this.accessToken = io.get('accessToken');
-                        angular.forEach(
-                            this.options.actions,
-                            function (method, action) {
-                                that['$' + action] = function (opts, returnOpts) {
-                                    return that.$request(action, opts, returnOpts);
-                                };
-                            }
-                        );
-                    },
-                    resourceFactory;
+                        Resource = function (url, options) {
+                            var that = this,
+                                deferred = $q.defer();
+                            deferred.resolve();
+                            this.$promise = deferred.promise;
+                            pubsub(this);
+                            this.data = (options && options.data) || {};
+                            this.options = helper.deepExtend(
+                                {url: url},
+                                $config,
+                                options
+                            );
+                            // Grab the access token from io service.
+                            this.accessToken = io.get('accessToken');
+                            angular.forEach(
+                                this.options.actions,
+                                function (method, action) {
+                                    that['$' + action] = function (opts, returnOpts) {
+                                        return that.$request(action, opts, returnOpts);
+                                    };
+                                }
+                            );
+                        },
+                        resourceFactory;
                     Resource.prototype.$getData = function () {
                         return this.data;
                     };
@@ -102,7 +102,8 @@
                                 settings.params.common,
                                 settings.params[action]
                             ),
-                            // Any request to the API needs the bearer to be in the authorization header
+                            // Any request to the API needs the bearer to be in
+                            // the authorization header.
                             oauthTokenHeaders = {
                                 Authorization: 'Bearer ' + this.$getAccessToken()
                             },
@@ -129,8 +130,8 @@
                             options.data = '';
                         } else if (
                             options.method !== 'POST' &&
-                            options.method !== 'PUT' &&
-                            options.method !== 'PATCH'
+                                options.method !== 'PUT' &&
+                                options.method !== 'PATCH'
                         ) {
                             delete options.data;
                         }
@@ -225,13 +226,13 @@
             };
             this.defaults = $config;
             this.$get = [
-              'resource',
-              'helper',
-              'user',
+                'resource',
+                'helper',
+                'user',
                 function (
-                  resource,
-                  helper,
-                  user
+                    resource,
+                    helper,
+                    user
                 ) {
                     return function (url, options, ignorePaging) {
                         var rs,
@@ -258,7 +259,7 @@
                         // This could be the case with the paging service, with the links
                         // coming from the API, or if reaching a different API version is required.
                         if (url.match(regex.api)) {
-                           prefix = '';
+                            prefix = '';
                         }
                         rs = resource(url, helper.deepExtend({
                             host: $config.host,
@@ -292,7 +293,7 @@
                                 // Either this method is called after a 401,
                                 // or directly from the resource. As a consequence,
                                 // the response data could be injected differently.
-                                // Also, after a 204(e.g. DELETE), no content is provided
+                                // Also, after a 204 (e.g. DELETE), no content is provided
                                 // thus response.data is set to be an empty string.
                                 var data;
                                 if (response.data) {
@@ -331,7 +332,7 @@
                         return rs;
                     };
                 }
-            ];
+                                            ];
         })
 
         .provider('authResource', function () {
