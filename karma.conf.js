@@ -23,6 +23,12 @@
                 'test/spec.js'
             ],
             exclude: [],
+            plugins: [
+                'karma-chrome-launcher',
+                'karma-coverage',
+                'karma-firefox-launcher',
+                'karma-jasmine'
+            ],
             preprocessors: {
                 'qipp-services-resource.js': ['coverage']
             },
