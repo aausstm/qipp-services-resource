@@ -3,7 +3,13 @@
 (function () {
     'use strict';
 
-    angular.module('qipp-services-resource', [])
+    angular.module('qipp-services-resource', [
+        'qipp-services-helper',
+        'qipp-services-io',
+        'qipp-services-pubsub',
+        'qipp-services-relay',
+        'qipp-services-user'
+    ])
 
         .provider('resource', function () {
             var $config = {
@@ -185,21 +191,21 @@
                                                 .then(
                                                     function (data) {
                                                         response = data;
-                                                        handle();
                                                         that.state = 'success';
+                                                        handle();
                                                         requestDeferred.resolve(data);
                                                     },
                                                     function (data) {
-                                                        handle();
                                                         that.state = 'error';
+                                                        handle();
                                                         requestDeferred.reject(data);
                                                     }
                                                 );
                                         }
                                     ]);
                                 } else {
-                                    handle();
                                     that.state = 'error';
+                                    handle();
                                     requestDeferred.reject(response.data);
                                 }
                             }
@@ -322,7 +328,7 @@
                                         pages: data.pages
                                     };
                                 }
-                                resource.errors = data && data.errors;
+                                resource.errors = response.data && response.data.errors;
                                 if (!resource.errors && resource.state === 'error') {
                                     resource.errors = {status: [response.status]};
                                 }
@@ -331,8 +337,7 @@
                         rs.user = user;
                         return rs;
                     };
-                }
-                                            ];
+                }];
         })
 
         .provider('authResource', function () {

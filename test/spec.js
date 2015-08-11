@@ -12,13 +12,8 @@
             module(
                 'qipp-services-resource',
                 'qipp-services-auth',
-                'qipp-services-helper',
-                'qipp-services-io',
                 'qipp-services-locale',
-                'qipp-services-pubsub',
-                'qipp-services-relay',
                 'qipp-services-semaphore',
-                'qipp-services-user',
                 'qipp-services-utils'
             );
         });
@@ -451,23 +446,23 @@
                             .$on('getpending', function () {
                                 triggered = 'pending';
                             })
-                            .$on('getsuccess', function (data, status) {
-                                triggered = status + ' success';
+                            .$on('getsuccess', function () {
+                                triggered = 'success';
                             })
-                            .$on('geterror', function (data, status) {
-                                triggered = status + ' error';
+                            .$on('geterror', function () {
+                                triggered = 'error';
                             });
                     expect(triggered).toBeUndefined();
                     $httpBackend.expectGET('/test').respond(200);
                     rs.$get();
                     expect(triggered).toEqual('pending');
                     $httpBackend.flush();
-                    expect(triggered).toEqual('200 success');
+                    expect(triggered).toEqual('success');
                     $httpBackend.expectGET('/test').respond(400);
                     rs.$get();
                     expect(triggered).toEqual('pending');
                     $httpBackend.flush();
-                    expect(triggered).toEqual('400 error');
+                    expect(triggered).toEqual('error');
                 }
             ));
 
@@ -481,7 +476,7 @@
             ));
 
             it('Should use the relay service to get a new access token after a 401.', inject(
-                function (auth, resource, semaphore) {
+                function ($rootScope, auth, resource, semaphore) {
                     // Create a resource semaphore
                     semaphore.init('resource');
                     // Configure the auth provider
@@ -495,7 +490,8 @@
                         auth.defaults.clientId
                     ].join('');
                     $httpBackend.expectGET('/test').respond(401);
-                    $httpBackend.expectGET().respond(401);
+                    $rootScope.$digest();
+                    //$httpBackend.expectGET().respond(401);
                     resource('test').$get();
                     $httpBackend.flush();
                 }
@@ -536,6 +532,7 @@
                             first: {}
                         },
                         indexes = {
+                            limit: undefined,
                             items: 30,
                             page: 1,
                             pages: 3
@@ -702,7 +699,7 @@
                 function (authResource) {
                     var rs = authResource('test');
                     $httpBackend.expectGET(authHost + '/test')
-                         .respond(200, {
+                        .respond(200, {
                             _embedded: { // jshint ignore:line
                                 items: {
                                     test: 123
@@ -711,7 +708,7 @@
                         });
                     rs.$get();
                     $httpBackend.flush();
-                    expect(rs.data.test).toEqual(123);
+                    expect(rs.data._embedded.items.test).toEqual(123);
                 }
             ));
 
