@@ -13,6 +13,8 @@
 
         .provider('resource', function () {
             var $config = {
+                // Set clientID, see qipp-services-auth.
+                clientId: undefined,
                 host: '',
                 prefix: '',
                 suffix: '',
@@ -108,7 +110,7 @@
                                 settings.params.common,
                                 settings.params[action]
                             ),
-                            // Any request to the API needs the bearer to be in
+                            // Any non public request to the API needs the bearer to be in
                             // the authorization header.
                             oauthTokenHeaders = {
                                 Authorization: 'Bearer ' + this.$getAccessToken()
@@ -116,17 +118,28 @@
                             headers = angular.extend(
                                 {},
                                 settings.headers.common,
-                                settings.headers[action],
-                                oauthTokenHeaders
+                                settings.headers[action]
                             ),
-                            options = helper.deepExtend({
-                                method: settings.actions[action],
-                                data: angular.extend({}, this.$getData()),
-                                params: params,
-                                headers: headers,
-                                withCredentials: settings.withCredentials
-                            }, opts),
+                            options,
                             promise = requestDeferred.promise;
+                        // Check if the access token is available.
+                        if (this.$getAccessToken()) {
+                            // Add bearer.
+                            angular.extend(
+                                headers,
+                                oauthTokenHeaders
+                            );
+                        } else {
+                            // Add the clientID property in the params.
+                            params.clientID = $config.clientId;
+                        }
+                        options = helper.deepExtend({
+                            method: settings.actions[action],
+                            data: angular.extend({}, this.$getData()),
+                            params: params,
+                            headers: headers,
+                            withCredentials: settings.withCredentials
+                        }, opts);
                         options.method = angular.uppercase(options.method);
                         // Only send body data for POST/PUT/PATCH requests:
                         if (options.method === 'DELETE') {
@@ -334,6 +347,7 @@
                                 }
                             }
                         }, options));
+                        // Push the user inside the resource.
                         rs.user = user;
                         return rs;
                     };
