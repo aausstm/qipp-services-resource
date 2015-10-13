@@ -10,12 +10,13 @@
   ],
   "homepage": "https://www.qipp.com/",
   "author": {
-    "name": "AQUANTUM",
-    "url": "http://www.aquantum.de/"
+    "name": "qipp",
+    "email": "dev@qipp.com",
+    "url": "https://qipp.com/"
   },
   "repository": {
     "type": "git",
-    "url": "ssh://git@bitbucket.org:aquantum/qipp-services-resource.git"
+    "url": "https://github.com/qipp/qipp-services-resource"
   },
   "devDependencies": {
     "angular": "1.4.0",
@@ -27,15 +28,15 @@
     "karma-jasmine": "0.3.5",
     "karma-chrome-launcher": "0.1.12",
     "karma-firefox-launcher": "0.1.6",
-    "qipp-services-auth": "git+ssh://git@bitbucket.org:aquantum/qipp-services-auth.git",
-    "qipp-services-helper": "git+ssh://git@bitbucket.org:aquantum/qipp-services-helper.git",
-    "qipp-services-io": "git+ssh://git@bitbucket.org:aquantum/qipp-services-io.git",
-    "qipp-services-locale": "git+ssh://git@bitbucket.org:aquantum/qipp-services-locale.git",
-    "qipp-services-pubsub": "git+ssh://git@bitbucket.org:aquantum/qipp-services-pubsub.git",
-    "qipp-services-relay": "git+ssh://git@bitbucket.org:aquantum/qipp-services-relay.git",
-    "qipp-services-semaphore": "git+ssh://git@bitbucket.org:aquantum/qipp-services-semaphore.git",
-    "qipp-services-user": "git+ssh://git@bitbucket.org:aquantum/qipp-services-user.git",
-    "qipp-services-utils": "git+ssh://git@bitbucket.org:aquantum/qipp-services-utils.git"
+    "qipp-services-auth": "0.1.0",
+    "qipp-services-helper": "0.1.0",
+    "qipp-services-io": "0.1.0",
+    "qipp-services-locale": "0.1.0",
+    "qipp-services-pubsub": "0.1.0",
+    "qipp-services-relay": "0.1.0",
+    "qipp-services-semaphore": "0.1.0",
+    "qipp-services-user": "0.1.0",
+    "qipp-services-utils": "0.1.0"
   },
   "scripts": {
     "lint": "jshint *.js test/spec.js",
