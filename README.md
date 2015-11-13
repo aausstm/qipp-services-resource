@@ -272,6 +272,8 @@ Some default parameters must be set in the config phase of your angular applicat
 authResourceProvider.defaults.host = 'https://auth.qipp.com';
 // Prefix has a default value.
 authResourceProvider.defaults.prefix = '/';
+// Set the auth client id in the authResource.
+authResourceProvider.defaults.clientId = 'YOUR_CLIENT_ID';
 ```
 Note that the *authResource()* method is based upon the *apiResource()* one, which
 means that the documentation of the latter apply to the former.
