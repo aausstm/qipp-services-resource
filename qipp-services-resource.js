@@ -371,7 +371,12 @@
                             angular.extend({
                                 host: $config.host,
                                 prefix: $config.prefix,
-                                withCredentials: true
+                                withCredentials: true,
+                                params: {
+                                    common: {
+                                        clientID: $config.clientId
+                                    }
+                                }
                             }, options),
                             true // Set ignore paging
                         );
