@@ -368,7 +368,7 @@
                     return function (url, options) {
                         return apiResource(
                             url,
-                            angular.extend({
+                            angular.merge({
                                 host: $config.host,
                                 prefix: $config.prefix,
                                 withCredentials: true,
