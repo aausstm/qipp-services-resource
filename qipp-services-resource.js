@@ -192,7 +192,9 @@
                                 }
                                 // Look after an unauthorized authentication,
                                 // i.e. the access token is expired or invalid.
-                                if (response.status === 401) {
+                                // Also handle IE10 bug that maps 401 to status code 0:
+                                // https://connect.microsoft.com/IE/feedback/details/785990/ie-10-on-win8-does-not-assign-the-correct-status-to-xmlhttprequest-when-the-result-is-401
+                                if (response.status === 401 || response.status === 0) {
                                     // Use auth through the relay service in order to avoid
                                     // a circular dependency as auth is already using authResource.
                                     relay.exec([

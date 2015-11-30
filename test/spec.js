@@ -497,6 +497,28 @@
                 }
             ));
 
+            it('Should use the relay service to get a new access token after a 0 - IE bug.', inject(
+                function ($rootScope, auth, resource, semaphore) {
+                    // Create a resource semaphore
+                    semaphore.init('resource');
+                    // Configure the auth provider
+                    auth.defaults.host = 'https://auth.qipp.com';
+                    auth.defaults.prefix = '/prefix/';
+                    auth.defaults.clientId = '123';
+                    auth.request = [
+                        auth.defaults.host,
+                        auth.defaults.prefix,
+                        'access-token?client_id=',
+                        auth.defaults.clientId
+                    ].join('');
+                    $httpBackend.expectGET('/test').respond(0);
+                    $rootScope.$digest();
+                    //$httpBackend.expectGET().respond(401);
+                    resource('test').$get();
+                    $httpBackend.flush();
+                }
+            ));
+
         });
 
         describe('apiResource', function () {
