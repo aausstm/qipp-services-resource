@@ -1,6 +1,6 @@
 {
   "name": "qipp-services-resource",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "title": "Resource service",
   "description": "Resource service for Angular application.",
   "keywords": [
