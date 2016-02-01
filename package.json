@@ -1,6 +1,6 @@
 {
   "name": "qipp-services-resource",
-  "version": "0.1.3",
+  "version": "1.0.0",
   "title": "Resource service",
   "description": "Resource service for Angular application.",
   "keywords": [
@@ -14,33 +14,54 @@
     "email": "dev@qipp.com",
     "url": "https://qipp.com/"
   },
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/qipp/qipp-services-resource"
   },
   "devDependencies": {
-    "angular": "1.4.0",
-    "angular-mocks": "1.4.0",
-    "jasmine": "2.3.1",
-    "jshint": "latest",
-    "karma": "0.12.33",
-    "karma-coverage": "0.3.1",
-    "karma-jasmine": "0.3.5",
-    "karma-chrome-launcher": "0.1.12",
-    "karma-firefox-launcher": "0.1.6",
-    "qipp-services-auth": "0.1.0",
-    "qipp-services-helper": "0.1.0",
+    "angular": "1.4.3",
+    "angular-mocks": "1.4.3",
+    "jasmine-core": "2.3.4",
+    "karma": "0.13.19",
+    "karma-coverage": "0.5.3",
+    "karma-jasmine": "0.3.6",
+    "karma-phantomjs-launcher": "1.0.0",
+    "snazzy": "2.0.1",
+    "standard": "5.4.1"
+  },
+  "dependencies": {
+    "qipp-services-auth": "1.0.0",
+    "qipp-services-helper": "1.0.0",
     "qipp-services-io": "0.1.0",
-    "qipp-services-locale": "0.1.0",
+    "qipp-services-locale": "2.0.0",
     "qipp-services-pubsub": "0.1.0",
     "qipp-services-relay": "0.1.0",
-    "qipp-services-semaphore": "0.1.0",
+    "qipp-services-semaphore": "1.0.1",
     "qipp-services-user": "0.1.0",
-    "qipp-services-utils": "0.1.0"
+    "qipp-services-utils": "1.0.0",
+    "qipp-services-uuid": "0.1.0"
   },
   "scripts": {
-    "lint": "jshint *.js test/spec.js",
-    "unit": "karma start"
+    "format": "standard -F",
+    "lint": "standard --verbose | snazzy",
+    "pretest": "npm up && npm run lint",
+    "test": "karma start",
+    "preversion": "npm test",
+    "version": "git add -A",
+    "postversion": "git push origin master && git push --tags origin master"
   },
-  "license": "MIT"
+  "standard": {
+    "globals": [
+      "angular",
+      "beforeEach",
+      "describe",
+      "expect",
+      "inject",
+      "it"
+    ],
+    "ignore": [
+      "report"
+    ]
+  }
 }
