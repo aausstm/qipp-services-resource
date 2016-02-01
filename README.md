@@ -298,6 +298,7 @@ npm test
 * [qipp-services-io](https://github.com/qipp/qipp-services-io)
 * [qipp-services-pubsub](https://github.com/qipp/qipp-services-pubsub)
 * [qipp-services-relay](https://github.com/qipp/qipp-services-relay)
+* [qipp-services-user](https://github.com/qipp/qipp-services-user)
 
 ## Licence
 
