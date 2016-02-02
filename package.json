@@ -20,7 +20,7 @@
     "url": "https://github.com/qipp/qipp-services-resource"
   },
   "engines": {
-    "npm": ">=4.2.4"
+    "node": ">=4.2.4"
   },
   "devDependencies": {
     "angular": "1.4.3",
