@@ -1,6 +1,6 @@
 {
   "name": "qipp-services-resource",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "title": "Resource service",
   "description": "Resource service for Angular application.",
   "keywords": [
@@ -34,13 +34,13 @@
     "standard": "5.4.1"
   },
   "dependencies": {
-    "qipp-services-auth": "1.0.0",
-    "qipp-services-helper": "1.0.0",
-    "qipp-services-io": "0.1.0",
-    "qipp-services-locale": "2.0.0",
+    "qipp-services-auth": "1.1.2",
+    "qipp-services-helper": "1.1.1",
+    "qipp-services-io": "1.0.1",
+    "qipp-services-locale": "2.1.1",
     "qipp-services-pubsub": "0.1.0",
     "qipp-services-relay": "0.1.0",
-    "qipp-services-semaphore": "1.0.1",
+    "qipp-services-semaphore": "1.0.2",
     "qipp-services-user": "0.1.0",
     "qipp-services-utils": "1.0.0",
     "qipp-services-uuid": "0.1.0"
