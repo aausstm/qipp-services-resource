@@ -108,8 +108,10 @@
               // Add bearer.
               angular.extend(headers, oauthTokenHeaders)
             } else {
-              // Add the clientID property in the params.
-              params.clientID = $config.clientId
+              // Add the clientID property to the params if it's not already there.
+              if (!params.clientID) {
+                params.clientID = $config.clientId
+              }
             }
             options = helper.deepExtend({
               method: settings.actions[action],
